@@ -30,7 +30,7 @@ for currentFileData in allFileData:
 		continue
 	
 	# Dosya istimini bulalim
-	filename = re.search(b'\x46\x69\x4c\x45.*?\....', currentFileData).group()
+		filename = re.search(b'(?<=\x46\x69\x4c\x45).*?(?=\00)', currentFileData).group()
 	# Datayi (ilk 65 byte i almadan) dosyalara paketleyelim	
 	with open(filename,"wb") as outputFile:
 		outputFile.write(currentFileData[65:])
