@@ -8,9 +8,12 @@ print "Hello World - CKD Expander for Lale Savascilari"
 
 # Regular Expressions kutuphanesini alalim
 import re
+import sys
+
+for currentFile in sys.argv[1:]:
 
 # Istedigimiz dosyayi acalim hemen
-with open("MUZIK.CKD","rb") as ckdFile:
+	with open(currentFile,"rb") as ckdFile:
 	# Butun datayi bi kerede alalim (Herhalde RAMi zorlayacak kadar buyuk dosylara
 	# denk gelmeyiz
 	data = ckdFile.read()
