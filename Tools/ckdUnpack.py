@@ -9,30 +9,36 @@ print "Hello World - CKD Expander for Lale Savascilari"
 # Regular Expressions kutuphanesini alalim
 import re
 import sys
+import os
 
 for currentFile in sys.argv[1:]:
 
-# Istedigimiz dosyayi acalim hemen
+	# Istedigimiz dosyayi acalim hemen
 	with open(currentFile,"rb") as ckdFile:
-	# Butun datayi bi kerede alalim (Herhalde RAMi zorlayacak kadar buyuk dosylara
-	# denk gelmeyiz
-	data = ckdFile.read()
+		# Butun datayi bi kerede alalim (Herhalde RAMi zorlayacak kadar buyuk dosylara
+		# denk gelmeyiz
+		data = ckdFile.read()
 
-# RegEx mucizesi (Buraya bu satiri anlatan yorum yazsam iyi olur
-allFileData = re.findall(b'\x46\x69\x4c\x45[\s\S]*?(?=\x46\x69\x4c\x45|$)',data)
+	# RegEx mucizesi (Buraya bu satiri anlatan yorum yazsam iyi olur
+	allFileData = re.findall(b'\x46\x69\x4c\x45[\s\S]*?(?=\x46\x69\x4c\x45|$)',data)
 
-# Buldugumuz butun dosyalari tek tek dosyalara koyalim
-for currentFileData in allFileData:
+	# Buldugumuz butun dosyalari tek tek dosyalara koyalim
+	for currentFileData in allFileData:
 
-#Check if the data is longer than 65 bytes
-#At the end of the file every file signature is repeated therefore we need this step
-	if len(currentFileData) <= 65:
-		continue
-	
-	# Dosya istimini bulalim
+	#Check if the data is longer than 65 bytes
+	#At the end of the file every file signature is repeated therefore we need this step
+		if len(currentFileData) <= 65:
+			continue
+		
+		# Dosyalari koymak icin klasor olusturalim
+		try:
+			os.makedirs("Output")
+		except OSError:
+			pass # already exists	
+		# Dosya istimini bulalim
 		filename = re.search(b'(?<=\x46\x69\x4c\x45).*?(?=\00)', currentFileData).group()
-	# Datayi (ilk 65 byte i almadan) dosyalara paketleyelim	
-	with open(filename,"wb") as outputFile:
-		outputFile.write(currentFileData[65:])
-		# Hava atma zamani
-		print "File Created:" + filename
+		# Datayi (ilk 65 byte i almadan) dosyalara paketleyelim	
+		with open(os.path.join("Output" , filename),"wb") as outputFile:
+			outputFile.write(currentFileData[65:])
+			# Hava atma zamani
+			print "File Created:" + filename
